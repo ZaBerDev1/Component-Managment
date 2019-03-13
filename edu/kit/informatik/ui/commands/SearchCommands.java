@@ -4,7 +4,6 @@ import java.util.Arrays;
 
 import edu.kit.informatik.exceptions.InputException;
 import edu.kit.informatik.ui.commands.Commands;
-import edu.kit.informatik.gamecontroll.Game;
 
 /**
  * searches the right command and triggers it
@@ -110,12 +109,12 @@ public class SearchCommands {
      * @throws InputException if the command is not vaild
      * @return returns the output of the executed command
      */
-    public String call(String wholeInput, String commandIdWord, String parameters, Game game) throws InputException {
+    public String call(String wholeInput, String commandIdWord, String parameters) throws InputException {
         Commands curr = arrCommands[find(commandIdWord)];
         if (!wholeInput.matches(curr.getSignature())) {
             throw new InputException();
         }
-        String output = curr.execute(parameters, game);
+        String output = curr.execute(parameters);
         return output;
     }
 }

@@ -3,7 +3,6 @@ package edu.kit.informatik.ui;
 import edu.kit.informatik.ui.commands.*;
 import edu.kit.informatik.Constant;
 import edu.kit.informatik.exceptions.*;
-import edu.kit.informatik.gamecontroll.Game;
 import edu.kit.informatik.Terminal;
 
 /**
@@ -16,15 +15,12 @@ class Main {
      */
     public static void main(String[] args) {
         SearchCommands search = new SearchCommands();
-        final int boardX = 15;
-        final int boardY = 11;
-        Game game = new Game(boardY, boardX);
         boolean programIsRunning = true;
         do {
             try {
                 String line = Terminal.readLine();
                 String[] splitedInput = splitInput(line);
-                String output = search.call(line, splitedInput[0], splitedInput[1], game);
+                String output = search.call(line, splitedInput[0], splitedInput[1]);
                 if (output.equals("exit")) {
                     programIsRunning = false;
                 } else {

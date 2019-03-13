@@ -49,7 +49,7 @@ public final class Constant {
         /** the regex for the getAssembly command */
         public static final String GETCOMPONENTS = "^getComponents " + NAME + ENDSYMBOL;
         /** the regex for the addPart command */
-        public static final String ADDPART = "^addPart " + NAME + "+" + AMOUNT + ":" + NAME + ENDSYMBOL;
+        public static final String ADDPART = "^addPart " + NAME + "\\+" + AMOUNT + ":" + NAME + ENDSYMBOL;
         /** the regex for the removePart command */
         public static final String REMOVEPART = "^removePart " + NAME + "-" + AMOUNT + ":" + NAME + ENDSYMBOL;
         /** the regex for the quit command */

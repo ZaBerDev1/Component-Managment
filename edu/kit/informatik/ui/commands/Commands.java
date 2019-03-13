@@ -1,10 +1,6 @@
 package edu.kit.informatik.ui.commands;
 
-import edu.kit.informatik.exceptions.BoardException;
-import edu.kit.informatik.exceptions.CommandOrderException;
 import edu.kit.informatik.exceptions.InputException;
-import edu.kit.informatik.exceptions.WrongPhaseException;
-import edu.kit.informatik.gamecontroll.*;
 import edu.kit.informatik.Constant;
 
 /**

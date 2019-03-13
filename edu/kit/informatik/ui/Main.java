@@ -14,28 +14,29 @@ class Main {
      * @param args Console input
      */
     public static void main(String[] args) {
-        SearchCommands search = new SearchCommands();
-        boolean programIsRunning = true;
-        do {
-            try {
-                String line = Terminal.readLine();
-                String[] splitedInput = splitInput(line);
-                String output = search.call(line, splitedInput[0], splitedInput[1]);
-                if (output.equals("exit")) {
-                    programIsRunning = false;
-                } else {
-                    // filter out previous errors
-                    if (output.matches(Constant.getExceptionBeginningRegex())) {
-                        output = output.substring(4);
-                        Terminal.printError(output);
-                    } else {
-                        Terminal.printLine(output);
-                    }
-                }
-            } catch (InputException e) {
-                Terminal.printError(e.getMessage());
-            }
-        } while(programIsRunning);
+        System.out.println("Is working");
+        // SearchCommands search = new SearchCommands();
+        // boolean programIsRunning = true;
+        // do {
+        //     try {
+        //         String line = Terminal.readLine();
+        //         String[] splitedInput = splitInput(line);
+        //         String output = search.call(line, splitedInput[0], splitedInput[1]);
+        //         if (output.equals("exit")) {
+        //             programIsRunning = false;
+        //         } else {
+        //             // filter out previous errors
+        //             if (output.matches(Constant.getExceptionBeginningRegex())) {
+        //                 output = output.substring(4);
+        //                 Terminal.printError(output);
+        //             } else {
+        //                 Terminal.printLine(output);
+        //             }
+        //         }
+        //     } catch (InputException e) {
+        //         Terminal.printError(e.getMessage());
+        //     }
+        // } while(programIsRunning);
     }
 
     /**

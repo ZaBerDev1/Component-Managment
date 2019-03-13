@@ -14,41 +14,12 @@ public final class Constant {
     public static final byte[] SYMBOLVALUES = {2, 3, 4, 5, 6, DAWN};
 
     /**
-     * returns all posible cahr in an array
-     * 
-     * @return an array of all psoible characters
-     */
-    public static char[] getAllBoardTokens() {
-        char[] all = new char[] {BoardTokens.VESTAVALUE, BoardTokens.CERESVALUE, BoardTokens.EMPTYVALUE,
-                BoardTokens.MISSIONCONTROLLVALUE};
-        return all;
-    }
-
-    /**
      * returns the regex for any Exception
      * 
      * @return the regex as a String
      */
     public static String getExceptionBeginningRegex() {
         return "^" + EXCEPTIONBEGINNING + ".*";
-    }
-
-    /**
-     * class that contains all posible symbols form the board
-     * 
-     * if a new one gets added it should also be added to the getAll method
-     */
-    public final class BoardTokens {
-        // token variables
-        /** value of the token Vesta */
-        public static final char VESTAVALUE = 'V';
-        /** value of the token Ceres */
-        public static final char CERESVALUE = 'C';
-        /** value of an empty field */
-        public static final char EMPTYVALUE = '-';
-        /** value of the token mission controll */
-        public static final char MISSIONCONTROLLVALUE = '+';
-
     }
 
     /**

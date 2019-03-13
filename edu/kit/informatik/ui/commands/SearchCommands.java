@@ -105,7 +105,6 @@ public class SearchCommands {
      * @param wholeInput the whole input
      * @param commandIdWord the idWord of the special command
      * @param parameters    the paramter that will be used by the execute method
-     * @param game the current game
      * @throws InputException if the command is not vaild
      * @return returns the output of the executed command
      */

@@ -8,10 +8,15 @@ public final class Constant {
     public static final String OK = "OK";
     /** the start of every Exception */
     public static final String EXCEPTIONBEGINNING = "404 ";
-    /** value of the DAWN token */
-    public static final byte DAWN = 7;
-    /** conatins all symbols of the cube */
-    public static final byte[] SYMBOLVALUES = {2, 3, 4, 5, 6, DAWN};
+
+    /**
+     * returns all commands as a String with muliple lines
+     * 
+     * @return the commands in one String
+     */
+    public String getAllCommands() {
+        return "Not finished yet.";
+    }
 
     /**
      * returns the regex for any Exception
@@ -26,33 +31,28 @@ public final class Constant {
      * class that contains all regex of the commands
      */
     public final class CommandRegex {
-        /** regex for the standard numbers of the x coordinat */
-        public static final String STANDARDNUMBERX = "[1][0]|[0-9]";
-        /** regex for the standard numbers of the y coordinat */
-        public static final String STANDARDNUMBERY = "[1][0-4]|[0-9]";
-        /** regex for the x coordinat of the place method */
-        public static final String PLACENUMBERX = "[1][0-6]|[0-9]|-[1-6]";
-        /** regex for the y coordinat of the place method */
-        public static final String PLACENUMBERY = "[1][0-9]|20|[0-9]|-[1-6]";
-        /** regex of the commnad print */
-        public static final String PRINTREGEX = "^print$";
-        /** regex of the command state */
-        public static final String STATEREGEX = "^state (" + STANDARDNUMBERX + ");(" + STANDARDNUMBERY + ")$";
-        /** regex of the commnad set-vc */
-        public static final String SETVCREGEX = "^set-vc (" + STANDARDNUMBERX + ");(" + STANDARDNUMBERY + ")$";
-        /** regex of the commnad roll */
-        public static final String ROLLREGEX = "^roll ([2-6]|DAWN)$";
-        /** regex of the commnad place */
-        public static final String PLACEREGEX = "^place (" + PLACENUMBERX + ");(" + PLACENUMBERY + "):(" + PLACENUMBERX
-                + ");(" + PLACENUMBERY + ")$";
-        /** regex of the commnad move */
-        public static final String MOVEREGEX = "^move (" + STANDARDNUMBERX + ");(" + STANDARDNUMBERY + ")(:("
-                + STANDARDNUMBERX + ");(" + STANDARDNUMBERY + "))*$";
-        /** regex of the commanad show-result */
-        public static final String SHOWRESULTREGEX = "^show-result$";
-        /** regex of the commanad reset */
-        public static final String RESETREGEX = "^reset$";
-        /** regex of the commanad quit */
-        public static final String QUITREGEX = "^quit$";
+        /** the end symbol for the regex */
+        public static final String ENDSYMBOL = "$";
+        /** regex for the name of the assemblies and components */
+        public static final String NAME = "[A-Za-z]+";
+        /** regex for the amount of components in a assembley */
+        public static final String AMOUNT = "(\\d{3}|\\d{2}|\\d)";
+        /** the regex for the addAssembly command */
+        public static final String ADDASSEMBLY = "^addAssembly " + NAME + "=" + AMOUNT + ":" + NAME + "(;" + AMOUNT
+                + ":" + NAME + ")*" + ENDSYMBOL;
+        /** the regex for the removeAssembly command */
+        public static final String REMOVEASSEMBLY = "^removeAssembly " + NAME + ENDSYMBOL;
+        /** the regex for the printAssembly command */
+        public static final String PRINTASSEMBLY = "^printAssembly " + NAME + ENDSYMBOL;
+        /** the regex for the getAssembly command */
+        public static final String GETASSEMBLIES = "^getAssemblies " + NAME + ENDSYMBOL;
+        /** the regex for the getAssembly command */
+        public static final String GETCOMPONENTS = "^getComponents " + NAME + ENDSYMBOL;
+        /** the regex for the addPart command */
+        public static final String ADDPART = "^addPart " + NAME + "+" + AMOUNT + ":" + NAME + ENDSYMBOL;
+        /** the regex for the removePart command */
+        public static final String REMOVEPART = "^removePart " + NAME + "-" + AMOUNT + ":" + NAME + ENDSYMBOL;
+        /** the regex for the quit command */
+        public static final String QUIT = "^quit$";
     }
 }

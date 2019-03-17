@@ -4,6 +4,7 @@ import edu.kit.informatik.ui.commands.*;
 import edu.kit.informatik.Constant;
 import edu.kit.informatik.exceptions.*;
 import edu.kit.informatik.Terminal;
+import edu.kit.informatik.data.MaterialDataBase;
 
 /**
  * The point were the program starts and ends with the output of a command
@@ -15,12 +16,13 @@ class Main {
      */
     public static void main(String[] args) {
         SearchCommands search = new SearchCommands();
+        MaterialDataBase materialDataBase = new MaterialDataBase();
         boolean programIsRunning = true;
         do {
             try {
                 String line = Terminal.readLine();
                 String[] splitedInput = splitInput(line);
-                String output = search.call(line, splitedInput[0], splitedInput[1]);
+                String output = search.call(line, splitedInput[0], splitedInput[1], materialDataBase);
                 if (output.equals("exit")) {
                     programIsRunning = false;
                 } else {

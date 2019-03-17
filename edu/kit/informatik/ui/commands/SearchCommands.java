@@ -2,6 +2,7 @@ package edu.kit.informatik.ui.commands;
 
 import java.util.Arrays;
 
+import edu.kit.informatik.data.MaterialDataBase;
 import edu.kit.informatik.exceptions.InputException;
 import edu.kit.informatik.ui.commands.Commands;
 
@@ -80,40 +81,43 @@ public class SearchCommands {
         int lowerBorder = 0;
         int higherBorder = arrCommands.length;
         int half = 0;
-        int halfOld = 0; //to identify when there is the same cycle
+        int halfOld = 0; // to identify when there is the same cycle
         int delta = 0;
         do {
-            half = (lowerBorder +  higherBorder) / 2;
+            half = (lowerBorder + higherBorder) / 2;
             if (half == halfOld) {
                 throw new InputException();
             }
             delta = searchedIdWord.compareTo(arrCommands[half].getIdWord());
             if (delta < 0) {
-                //searchedIdWord is before the idWord of half in the alphabet
+                // searchedIdWord is before the idWord of half in the alphabet
                 higherBorder = half;
             } else {
                 // searchedIdWord is after the idWord of half in the alphabet
                 lowerBorder = half;
             }
             halfOld = half;
-        } while(delta != 0);
+        } while (delta != 0);
         return half;
     }
 
     /**
      * calls the suitable execute method
-     * @param wholeInput the whole input
+     * 
+     * @param wholeInput    the whole input
      * @param commandIdWord the idWord of the special command
      * @param parameters    the paramter that will be used by the execute method
+     * @param materialDataBase the data base which is currently active
      * @throws InputException if the command is not vaild
      * @return returns the output of the executed command
      */
-    public String call(String wholeInput, String commandIdWord, String parameters) throws InputException {
+    public String call(String wholeInput, String commandIdWord, String parameters, MaterialDataBase materialDataBase)
+            throws InputException {
         Commands curr = arrCommands[find(commandIdWord)];
         if (!wholeInput.matches(curr.getSignature())) {
             throw new InputException();
         }
-        String output = curr.execute(parameters);
+        String output = curr.execute(parameters, materialDataBase);
         return output;
     }
 }

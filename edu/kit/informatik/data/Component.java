@@ -1,15 +1,13 @@
 package edu.kit.informatik.data;
 
-import java.util.HashMap;
-
 import edu.kit.informatik.exceptions.ComponentException;
+import edu.kit.informatik.exceptions.MaterialListException;
 
 public class Component {
     /** the name of the component */
     private String name = "";
     private boolean isAssembly = false;
-    /** if it is a assembly the hash map holds all pieces of it and there amounts*/
-    private HashMap<Component, Integer> materialList = new HashMap<Component, Integer>();
+    private MaterialList materialList = new MaterialList();
     
     /**
      * initalices an component (not an assembly)
@@ -40,12 +38,13 @@ public class Component {
      * @param component the component which should be part of the assembly
      * @return the amount of the searched component
      * @throws ComponentException indicates if the component is not available
+     * @throws MaterialListException if the materialList doesn't contain the component
      */
-    public int getAmount(Component component) throws ComponentException {
+    public int getAmount(Component component) throws ComponentException, MaterialListException {
         if (!checkIsComponent(component)) {
             throw new ComponentException("This component is not a piece of " + name + ".");
         }
-        return materialList.get(component);
+        return materialList.getAmount(component);
     }
 
     /**
@@ -53,13 +52,8 @@ public class Component {
      * @return all components in an array
      */
     public Component[] getAllComponents() {
-        Component[] components = new Component[materialList.size()];
-        int i = 0;
-        for (Component curr : materialList.keySet()) {
-            components[i] = curr;
-            i++;
-        }
-        return components;
+
+        return materialList.componentSet();
     }
 
     /**
@@ -72,17 +66,18 @@ public class Component {
         if (!isAssembly) {
             throw new ComponentException("This is not an assembly.");
         }
-        return materialList.containsKey(component);
+        return materialList.contains(component);
     }
 
     /**
      * adds an amount of components to the assembly
      * @param component the new component which should be added to the list of parts
      * @param amount the amount of pieces that are added form this kind
+     * @throws MaterialListException if the amount of the component gets higher than the max amount
      */
-    public void addPart(Component component, int amount) {
+    public void addPart(Component component, int amount) throws MaterialListException {
         isAssembly = true;
-        materialList.put(component, amount);
+        materialList.addComponent(component, amount);
     }
 
     public boolean checkForCycle() throws ComponentException {

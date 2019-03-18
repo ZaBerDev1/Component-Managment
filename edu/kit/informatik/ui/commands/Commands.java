@@ -4,7 +4,6 @@ import java.util.HashMap;
 
 import edu.kit.informatik.Constant;
 import edu.kit.informatik.data.*;
-import edu.kit.informatik.exceptions.ComponentException;
 import edu.kit.informatik.exceptions.InputException;
 
 /**
@@ -35,11 +34,7 @@ public enum Commands {
                 Component component = new Component(splitedComponentPair[1]);
                 parts.put(component, amount);
             }
-            try {
-                materialDataBase.addAssembly(equalSympbolSplited[0], parts);
-            } catch (ComponentException e) {
-                return e.getMessage();
-            }
+            materialDataBase.addAssembly(equalSympbolSplited[0], parts);
             return Constant.OK;
         }
     },

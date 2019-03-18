@@ -5,6 +5,8 @@ import java.util.HashMap;
 
 import edu.kit.informatik.exceptions.ComponentException;
 
+import edu.kit.informatik.Terminal;
+
 public class MaterialDataBase {
     /** a list of all components and assamblies */
     private ArrayList<Component> allComponents = new ArrayList<Component>();
@@ -37,5 +39,15 @@ public class MaterialDataBase {
             component.addPart(curr, parts.get(curr));
         }
         allComponents.add(component);
+    }
+
+    /**
+     * test code
+     * prints out every existing part of the database
+     */
+    public void printExistingParts() {
+        for (int i = 0; i < allComponents.size(); i++) {
+            Terminal.printLine(allComponents.get(i).getName());
+        }
     }
 }

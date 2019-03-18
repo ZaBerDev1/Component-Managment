@@ -14,36 +14,33 @@ public enum Commands {
 
     /**
      * creates a new material list for the assembly
-     * 
-     * addAssembly
      */
     ADDASSEMBLY(Constant.CommandRegex.ADDASSEMBLY) {
         @Override
         public String execute(String parameters, MaterialDataBase materialDataBase) {
+            if (!parameters.contains("=") || !parameters.contains(":") || !parameters.contains(";")) {
+                return "The command should like addAssembly nameAssembly=amount1:name1;amount2:name2;...";
+            }
             String equalSympbolSplited[] = parameters.split("="); // 1 is the assembly name
-            String componentPairs[] = equalSympbolSplited[2].split(";");
+            String componentPairs[] = equalSympbolSplited[1].split(";");
             HashMap<Component, Integer> parts = new HashMap<Component, Integer>();
             for (int i = 0; i < componentPairs.length; i++) {
-                if (componentPairs.length != 2) {
-                    return Constant.EXCEPTIONBEGINNING
-                            + "Each component need so to be speciefied by with his name and his amount.";
-                }
-                Component component = new Component(componentPairs[0]);
+                String[] splitedComponentPair = componentPairs[i].split(":");
                 int amount = 0;
                 try {
-                    amount = Integer.parseInt(componentPairs[1]);
+                    amount = Integer.parseInt(splitedComponentPair[0]);
                 } catch (NumberFormatException e) {
-                    return e.getMessage();
+                    return "The amount of each part should be a number between 0 and 999";
                 }
+                Component component = new Component(splitedComponentPair[1]);
                 parts.put(component, amount);
             }
-            String output = Constant.OK;
             try {
                 materialDataBase.addAssembly(equalSympbolSplited[0], parts);
             } catch (ComponentException e) {
-                output = e.getMessage();
+                return e.getMessage();
             }
-            return output;
+            return Constant.OK;
         }
     },
 
@@ -89,11 +86,13 @@ public enum Commands {
 
     /**
      * adds a part to an excisting assembly
+     * addPart X+1:A
      */
     ADDPART(Constant.CommandRegex.ADDPART) {
         @Override
         public String execute(String parameters, MaterialDataBase materialDataBase) {
-            return "addPart unfinished";
+            //materialDataBase.addComponent(name);
+            return "unfinished";
         }
     },
 

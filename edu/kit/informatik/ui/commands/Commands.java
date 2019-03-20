@@ -17,7 +17,7 @@ public enum Commands {
     ADDASSEMBLY(Constant.CommandRegex.ADDASSEMBLY) {
         @Override
         public String execute(String parameters, MaterialDataBase materialDataBase) {
-            if (!parameters.contains("=") || !parameters.contains(":") || !parameters.contains(";")) {
+            if (!parameters.contains("=") || !parameters.contains(":")) {
                 return "The command should like addAssembly nameAssembly=amount1:name1;amount2:name2;...";
             }
             String equalSympbolSplited[] = parameters.split("="); // 1 is the assembly name
@@ -32,6 +32,9 @@ public enum Commands {
                     return "The amount of each part should be a number between 0 and 999";
                 }
                 Component component = new Component(splitedComponentPair[1]);
+                if (parts.contains(component)) {
+                    return "A part was mentioned twice.";
+                }
                 try {
                     parts.addComponent(component, amount);
                 } catch (MaterialListException e) {
@@ -55,7 +58,12 @@ public enum Commands {
     REMOVEASSEMBLY(Constant.CommandRegex.REMOVEASSEMBLY) {
         @Override
         public String execute(String parameters, MaterialDataBase materialDataBase) {
-            return "remove unfinished";
+            try {
+                materialDataBase.removeAssembly(parameters);
+            } catch (MaterialDataBaseException e) {
+                return e.getMessage();
+            }
+            return Constant.OK;
         }
     },
 
@@ -65,7 +73,11 @@ public enum Commands {
     PRINTASSEMBLY(Constant.CommandRegex.PRINTASSEMBLY) {
         @Override
         public String execute(String parameters, MaterialDataBase materialDataBase) {
-            return "print unfinished";
+            try {
+                return materialDataBase.printAssembly(parameters);
+            } catch (MaterialDataBaseException e) {
+                return e.getMessage();
+            }
         }
     },
 
@@ -91,12 +103,30 @@ public enum Commands {
 
     /**
      * adds a part to an excisting assembly addPart X+1:A
+     * 
+     * addPart <nameAssembly>+<amount>:<name>
      */
     ADDPART(Constant.CommandRegex.ADDPART) {
         @Override
         public String execute(String parameters, MaterialDataBase materialDataBase) {
-            // materialDataBase.addComponent(name);
-            return "unfinished";
+            String[] splitedPlus = parameters.split("\\+");
+            String[] wholeSplited = splitedPlus[1].split(":");
+            int amount = 0;
+            String name = wholeSplited[1];
+            String nameAssembly = splitedPlus[0];
+            try {
+                amount = Integer.parseInt(wholeSplited[0]);
+            } catch (NumberFormatException e) {
+                return e.getMessage();
+            }
+            try {
+                materialDataBase.addPart(nameAssembly, name, amount);
+            } catch (MaterialDataBaseException e) {
+                return e.getMessage();
+            } catch (MaterialListException e) {
+                return e.getMessage();
+            }
+            return Constant.OK;
         }
     },
 
@@ -106,7 +136,24 @@ public enum Commands {
     REMOVEPART(Constant.CommandRegex.REMOVEPART) {
         @Override
         public String execute(String parameters, MaterialDataBase materialDataBase) {
-            return "removePart unfinished";
+            String[] splitedPlus = parameters.split("\\-");
+            String[] wholeSplited = splitedPlus[1].split(":");
+            int amount = 0;
+            String name = wholeSplited[1];
+            String nameAssembly = splitedPlus[0];
+            try {
+                amount = Integer.parseInt(wholeSplited[0]);
+            } catch (NumberFormatException e) {
+                return e.getMessage();
+            }
+            try {
+                materialDataBase.removePart(nameAssembly, name, amount);
+            } catch (MaterialDataBaseException e) {
+                return e.getMessage();
+            } catch (MaterialListException e) {
+                return e.getMessage();
+            }
+            return Constant.OK;
         }
     },
 

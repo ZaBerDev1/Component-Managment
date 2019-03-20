@@ -13,7 +13,7 @@ public class MaterialList {
     /**
      * constructor that also creates an Comparator for the attribute treeMap
      */
-    MaterialList() {
+    public MaterialList() {
         // The new comparator is basicly the String comperator used on the name of each
         // Component
         Comparator<Component> comparator = new Comparator<Component>() {

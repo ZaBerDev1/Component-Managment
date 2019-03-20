@@ -83,12 +83,17 @@ public class Component {
     public boolean checkForCycle() throws ComponentException {
         boolean cycleFree = true;
         if (!isAssembly) {
-            throw new ComponentException("This is not an assembly.");
+            throw new ComponentException("This is not an assembly so it obviously can't have any cycle.");
         }
-
-        //unfinished!!!!!!!!!!!!
-
-
+        
         return cycleFree;
+    }
+
+    @Override
+    public boolean equals(Object component) {
+        if (!(component instanceof Component)) {
+            return false;
+        }
+        return this.getName().equals(((Component) component).getName());
     }
 }

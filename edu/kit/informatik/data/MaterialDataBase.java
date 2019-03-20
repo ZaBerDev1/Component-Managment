@@ -1,9 +1,10 @@
 package edu.kit.informatik.data;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import edu.kit.informatik.Terminal;
+import edu.kit.informatik.exceptions.MaterialDataBaseException;
+import edu.kit.informatik.exceptions.MaterialListException;
 
 public class MaterialDataBase {
     /** a list of all components and assamblies */
@@ -28,9 +29,20 @@ public class MaterialDataBase {
      * add a new component to the database
      * @param name the name of the new Component
      * @param parts a hash map of parts that contains all parts of the component and there amounts
+     * @throws MaterialListException if one of the parts is not available in the MaterialList
+     * @throws MaterialDataBaseException if the added assembly exists already
      */
-    public void addAssembly(String name, HashMap<Component, Integer> parts) {
-
+    public void addAssembly(String name, MaterialList parts) throws MaterialListException, MaterialDataBaseException {
+        Component assembly  = new Component(name);
+        Component[] partArray = parts.componentSet();
+        for (int i = 0; i < parts.size(); i++) {
+            Component currComponent = partArray[i];
+            assembly.addPart(currComponent, parts.getAmount(currComponent));   
+        }
+        if (allComponents.contains(assembly)) {
+            throw new MaterialDataBaseException("The an assembly named " + assembly.getName() + " exists already.");
+        }
+        allComponents.add(assembly);
     }
 
     /**

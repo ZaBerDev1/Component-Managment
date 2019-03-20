@@ -1,10 +1,10 @@
 package edu.kit.informatik.ui.commands;
 
-import java.util.HashMap;
-
 import edu.kit.informatik.Constant;
 import edu.kit.informatik.data.*;
 import edu.kit.informatik.exceptions.InputException;
+import edu.kit.informatik.exceptions.MaterialDataBaseException;
+import edu.kit.informatik.exceptions.MaterialListException;
 
 /**
  * contains all valid commands as well as there signature and behavior
@@ -22,7 +22,7 @@ public enum Commands {
             }
             String equalSympbolSplited[] = parameters.split("="); // 1 is the assembly name
             String componentPairs[] = equalSympbolSplited[1].split(";");
-            HashMap<Component, Integer> parts = new HashMap<Component, Integer>();
+            MaterialList parts = new MaterialList();
             for (int i = 0; i < componentPairs.length; i++) {
                 String[] splitedComponentPair = componentPairs[i].split(":");
                 int amount = 0;
@@ -32,9 +32,19 @@ public enum Commands {
                     return "The amount of each part should be a number between 0 and 999";
                 }
                 Component component = new Component(splitedComponentPair[1]);
-                parts.put(component, amount);
+                try {
+                    parts.addComponent(component, amount);
+                } catch (MaterialListException e) {
+                    return e.getMessage();
+                }
             }
-            materialDataBase.addAssembly(equalSympbolSplited[0], parts);
+            try {
+                materialDataBase.addAssembly(equalSympbolSplited[0], parts);
+            } catch (MaterialDataBaseException e) {
+                return e.getMessage();
+            } catch (MaterialListException e) {
+                return e.getMessage();
+            }
             return Constant.OK;
         }
     },
@@ -80,13 +90,12 @@ public enum Commands {
     },
 
     /**
-     * adds a part to an excisting assembly
-     * addPart X+1:A
+     * adds a part to an excisting assembly addPart X+1:A
      */
     ADDPART(Constant.CommandRegex.ADDPART) {
         @Override
         public String execute(String parameters, MaterialDataBase materialDataBase) {
-            //materialDataBase.addComponent(name);
+            // materialDataBase.addComponent(name);
             return "unfinished";
         }
     },

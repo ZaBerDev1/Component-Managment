@@ -189,10 +189,7 @@ public class MaterialList {
             treeMap.replace(array[i], currAmount, currAmount * skalar);
         }
     }
-
-    /**
-     * test code returns the whole treeMap as a String in form of a list
-     */
+    
     @Override
     public String toString() {
         String output = "";

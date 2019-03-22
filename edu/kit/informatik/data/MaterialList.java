@@ -25,15 +25,6 @@ public class MaterialList {
     }
 
     /**
-     * getter for the treeMap
-     * 
-     * @return the treeMap which contains the whole data
-     */
-    public TreeMap<Component, Integer> getTreeMap() {
-        return treeMap;
-    }
-
-    /**
      * checks if the component is in the materialList
      * 
      * @param component the component which is searched for
@@ -80,8 +71,9 @@ public class MaterialList {
 
     /**
      * removes an speciefied amount of a certain component
+     * 
      * @param component the component which should be removed
-     * @param amount the speciefied amount
+     * @param amount    the speciefied amount
      * @throws MaterialListException if there is no component like this
      */
     public void remove(Component component, int amount) throws MaterialListException {
@@ -102,6 +94,7 @@ public class MaterialList {
 
     /**
      * returns the size of the material list
+     * 
      * @return the size of the material list
      */
     public int size() {
@@ -110,6 +103,7 @@ public class MaterialList {
 
     /**
      * puts one of each component in an array
+     * 
      * @return an array of Components that are all contained in the material list
      */
     public Component[] componentSet() {
@@ -123,13 +117,77 @@ public class MaterialList {
     }
 
     /**
+     * merges two material lists together so there in this are all components and
+     * there added amounts
+     * 
+     * @param secondMaterialList the second material list
+     * @throws MaterialListException i don't know how you did it but congrats to you
+     */
+    public void merge(MaterialList secondMaterialList) throws MaterialListException {
+        Component[] allComponents = secondMaterialList.componentSet();
+        for (int i = 0; i < allComponents.length; i++) {
+            addComponent(allComponents[i], secondMaterialList.getAmount(allComponents[i]));
+        }
+    }
+
+    /**
+     * builds a String that contains the materialList in a sorted way (sorted by
+     * amount)
+     * 
+     * @return the list of all parts and there amount
+     */
+    public String toStringSorted() {
+        Component[] sortedArray = this.componentSet();
+        boolean sorted = true;
+        do {
+            sorted = true;
+            for (int i = 1; i < sortedArray.length; i++) {
+                Component c1 = sortedArray[i - 1];
+                Component c2 = sortedArray[i];
+                int amount1 = 0;
+                int amount2 = 0;
+                try {
+                    amount1 = this.getAmount(c1);
+                    amount2 = this.getAmount(c2);
+                } catch (MaterialListException e) {
+                    return e.getMessage();
+                }
+                if (amount1 > amount2) {
+                    // switch positions
+                    if (amount1 == amount2 && c1.getName().compareTo(c2.getName()) < 0) {
+                        continue;
+                    }
+                    sortedArray[i - 1] = c2;
+                    sortedArray[i] = c1;
+                    sorted = false;
+                }
+            }
+        } while (!sorted);
+        String output = "";
+        for (int i = 0; i < sortedArray.length; i++) {
+            try {
+                output += sortedArray[i].getName() + ":" + this.getAmount(sortedArray[i]);
+            } catch (MaterialListException e) {
+                return e.getMessage();
+            }
+            if (i != sortedArray.length - 1) {
+                output += ";";
+            }
+        }
+        return output;
+    }
+
+    /**
      * test code returns the whole treeMap as a String in form of a list
      */
     @Override
     public String toString() {
         String output = "";
-        for (Component entry : treeMap.keySet()) {
-            output += "name: " + entry.getName() + " | amount: " + treeMap.get(entry);
+        for (Component curr : treeMap.keySet()) {
+            output += curr.getName() + ":" + treeMap.get(curr);
+            if (!treeMap.lastKey().equals(curr)) {
+                output += ";";
+            }
         }
         return output;
     }

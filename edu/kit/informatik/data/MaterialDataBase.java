@@ -3,6 +3,7 @@ package edu.kit.informatik.data;
 import java.util.ArrayList;
 import java.util.Comparator;
 
+import edu.kit.informatik.Constant;
 import edu.kit.informatik.Terminal;
 import edu.kit.informatik.exceptions.ComponentException;
 import edu.kit.informatik.exceptions.MaterialDataBaseException;
@@ -36,24 +37,25 @@ public class MaterialDataBase {
      */
     public void addAssembly(String name, MaterialList parts) throws MaterialListException, MaterialDataBaseException {
         Component assembly = new Component(name);
+        if (findAll(assembly) != -1 && allComponents.get(findAll(assembly)).getIsAssembly()) {
+            throw new MaterialDataBaseException("The an assembly named " + assembly.getName() + " exists already.");
+        }
+        // if the assembly exists already as an component
+        if (allComponents.contains(assembly)) {
+            assembly = allComponents.get(findAll(assembly));
+        }
         Component[] partArray = parts.componentSet();
         for (int i = 0; i < parts.size(); i++) {
-            Component currComponent = partArray[i];
-            // check if one of the parts already exists so no new one gets created
-            if (allComponents.contains(partArray[i])) {
-                int indexAll = allComponents.indexOf(partArray[i]);
-                assembly.addPart(allComponents.get(indexAll), parts.getAmount(currComponent));
-            } else {
-                assembly.addPart(currComponent, parts.getAmount(currComponent));
-            }
-        }
-        if (allComponents.contains(assembly)) {
-            throw new MaterialDataBaseException("The an assembly named " + assembly.getName() + " exists already.");
+            assembly.addPart(partArray[i], parts.getAmount(partArray[i]));
         }
         if (assembly.checkForCycle()) {
             throw new MaterialDataBaseException("This assembly would create a cycle.");
         }
-        allComponents.add(assembly);
+        for (int i = 0; i < partArray.length; i++) {
+            allComponents.add(partArray[i]);
+        }
+        if (!allComponents.contains(assembly))
+            allComponents.add(assembly);
         allComponents.sort(componentComparator);
     }
 
@@ -84,7 +86,7 @@ public class MaterialDataBase {
         // works because the equal method only compares the name not the parts
         Component refAssembly = new Component(name);
         if (!allComponents.contains(refAssembly)) {
-            throw new MaterialDataBaseException("A component with the name " + name + " doesn't exist.");
+            return Constant.COMPONENT;
         }
         int indexOfRefAssembly = allComponents.indexOf(refAssembly);
         Component realAssembly = allComponents.get(indexOfRefAssembly);
@@ -105,13 +107,55 @@ public class MaterialDataBase {
         return output;
     }
 
+    public String getAssembly(String name) throws MaterialDataBaseException {
+        // works because the equal method only compares the name not the parts
+        Component refAssembly = new Component(name);
+        if (!allComponents.contains(refAssembly)) {
+            throw new MaterialDataBaseException("A component with the name " + name + " doesn't exist.");
+        }
+        int indexOfRefAssembly = allComponents.indexOf(refAssembly);
+        Component realAssembly = allComponents.get(indexOfRefAssembly);
+        MaterialList connectedAssemblys = new MaterialList();
+        try {
+            connectedAssemblys = startGetAssembly(realAssembly);
+        } catch (MaterialListException e) {
+            return e.getMessage();
+        } catch (ComponentException e) {
+            return e.getMessage();
+        }
+        return connectedAssemblys.toStringSorted();
+    }
+
+    private MaterialList startGetAssembly(Component startComponent) throws MaterialListException, ComponentException {
+        Component[] parts = startComponent.getAllComponents();
+        MaterialList connectedAssemblys = new MaterialList();
+        for (int i = 0; i < parts.length; i++) {
+            connectedAssemblys.addComponent(parts[i], startComponent.getAmount(parts[i]));
+        }
+        return recrusiveGetAssembly(connectedAssemblys);
+    }
+
+    private MaterialList recrusiveGetAssembly(MaterialList connectedAssemblys)
+            throws MaterialListException, ComponentException {
+        Component[] allComponents = connectedAssemblys.componentSet();
+        MaterialList nConnectedAssemlbys = new MaterialList();
+        nConnectedAssemlbys.merge(connectedAssemblys);
+        for (int i = 0; i < allComponents.length; i++) {
+            if (allComponents[i].getIsAssembly()) {
+                nConnectedAssemlbys.merge(startGetAssembly(allComponents[i]));
+            }
+        }
+        return nConnectedAssemlbys;
+    }
+
     /**
      * adds an amount of parts to an assembly
+     * 
      * @param nameAssembly the name of the assembly
-     * @param name the name of the part
-     * @param amount the amount which should be added
+     * @param name         the name of the part
+     * @param amount       the amount which should be added
      * @throws MaterialDataBaseException when there is no assembly with that name
-     * @throws MaterialListException if the amout gets over the limit
+     * @throws MaterialListException     if the amout gets over the limit
      */
     public void addPart(String nameAssembly, String name, int amount)
             throws MaterialDataBaseException, MaterialListException {
@@ -128,11 +172,12 @@ public class MaterialDataBase {
 
     /**
      * removes an amount of parts from an assembly
+     * 
      * @param nameAssembly the name of the assembly
-     * @param name the name of the part
-     * @param amount the amount which should be removed
+     * @param name         the name of the part
+     * @param amount       the amount which should be removed
      * @throws MaterialDataBaseException when there is no assembly with that name
-     * @throws MaterialListException if the amount get lower than 0
+     * @throws MaterialListException     if the amount get lower than 0
      */
     public void removePart(String nameAssembly, String name, int amount)
             throws MaterialDataBaseException, MaterialListException {
@@ -154,5 +199,14 @@ public class MaterialDataBase {
         for (int i = 0; i < allComponents.size(); i++) {
             Terminal.printLine(allComponents.get(i).getName());
         }
+    }
+
+    private int findAll(Component searched) {
+        for (int i = 0; i < allComponents.size(); i++) {
+            if (searched.equals(allComponents.get(i))) {
+                return i;
+            }
+        }
+        return Constant.ERRORINT;
     }
 }

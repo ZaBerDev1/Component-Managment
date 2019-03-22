@@ -8,6 +8,10 @@ public final class Constant {
     public static final String OK = "OK";
     /** the start of every Exception */
     public static final String EXCEPTIONBEGINNING = "404 ";
+    /** used to output the word COMPONENT */
+    public static final String COMPONENT = "COMPONENT";
+    /** a int that shows that an error occured */
+    public static final int ERRORINT = -1;
 
     /**
      * returns all commands as a String with muliple lines

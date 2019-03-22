@@ -87,7 +87,11 @@ public enum Commands {
     GETASSEMBLIES(Constant.CommandRegex.GETASSEMBLIES) {
         @Override
         public String execute(String parameters, MaterialDataBase materialDataBase) {
-            return "getAssemblies unfinished";
+            try {
+                return materialDataBase.getAssembly(parameters);
+            } catch (MaterialDataBaseException e) {
+                return e.getMessage();
+            }
         }
     },
 
@@ -103,8 +107,6 @@ public enum Commands {
 
     /**
      * adds a part to an excisting assembly addPart X+1:A
-     * 
-     * addPart <nameAssembly>+<amount>:<name>
      */
     ADDPART(Constant.CommandRegex.ADDPART) {
         @Override

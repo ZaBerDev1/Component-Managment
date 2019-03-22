@@ -107,6 +107,12 @@ public class MaterialDataBase {
         return output;
     }
 
+    /**
+     * returns all assemblys of an assembly in a String
+     * @param name the name of the main assembly
+     * @return the String in form of a list
+     * @throws MaterialDataBaseException if the component already exists
+     */
     public String getAssembly(String name) throws MaterialDataBaseException {
         // works because the equal method only compares the name not the parts
         Component refAssembly = new Component(name);

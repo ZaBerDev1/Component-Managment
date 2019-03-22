@@ -1,6 +1,5 @@
 package edu.kit.informatik.data;
 
-import edu.kit.informatik.Constant;
 import edu.kit.informatik.exceptions.ComponentException;
 import edu.kit.informatik.exceptions.MaterialListException;
 

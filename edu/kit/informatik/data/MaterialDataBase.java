@@ -109,6 +109,7 @@ public class MaterialDataBase {
 
     /**
      * returns all assemblys of an assembly in a String
+     * 
      * @param name the name of the main assembly
      * @return the String in form of a list
      * @throws MaterialDataBaseException if the component already exists
@@ -121,41 +122,14 @@ public class MaterialDataBase {
         }
         int indexOfRefAssembly = allComponents.indexOf(refAssembly);
         Component realAssembly = allComponents.get(indexOfRefAssembly);
-        MaterialList connectedAssemblys = new MaterialList();
         try {
-            connectedAssemblys = startGetAssembly(realAssembly, 1);
-        } catch (MaterialListException e) {
-            return e.getMessage();
+            ProductList productList = new ProductList(realAssembly);
+            return productList.toString(true, false);
         } catch (ComponentException e) {
             return e.getMessage();
+        } catch (MaterialListException e) {
+            return e.getMessage();
         }
-        return connectedAssemblys.toStringSorted();
-    }
-
-    private MaterialList startGetAssembly(Component startComponent, int amount)
-            throws MaterialListException, ComponentException, MaterialListException {
-        Component[] parts = startComponent.getAllComponents();
-        MaterialList connectedAssemblys = new MaterialList();
-        for (int i = 0; i < parts.length; i++) {
-            connectedAssemblys.addComponent(parts[i], startComponent.getAmount(parts[i]));
-        }
-        MaterialList nMaterialList = recrusiveGetAssembly(connectedAssemblys);
-        nMaterialList.multiplyList(amount);
-        return nMaterialList;
-    }
-
-    private MaterialList recrusiveGetAssembly(MaterialList connectedAssemblys)
-            throws MaterialListException, ComponentException {
-        Component[] allComponents = connectedAssemblys.componentSet();
-        MaterialList nConnectedAssemlbys = new MaterialList();
-        nConnectedAssemlbys.merge(connectedAssemblys);
-        for (int i = 0; i < allComponents.length; i++) {
-            if (allComponents[i].getIsAssembly()) {
-                nConnectedAssemlbys
-                        .merge(startGetAssembly(allComponents[i], connectedAssemblys.getAmount(allComponents[i])));
-            }
-        }
-        return nConnectedAssemlbys;
     }
 
     /**

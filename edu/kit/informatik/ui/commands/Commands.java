@@ -30,14 +30,15 @@ public enum Commands {
                 try {
                     amount = Integer.parseInt(splitedComponentPair[0]);
                 } catch (NumberFormatException e) {
-                    return Constant.EXCEPTIONBEGINNING + "The amount of each part should be a number between 0 and 999";
+                    return Constant.EXCEPTIONBEGINNING
+                            + "The amount of each part should be a number between 0 and 1001";
                 }
                 Component component = new Component(splitedComponentPair[1]);
                 if (parts.contains(component)) {
                     return Constant.EXCEPTIONBEGINNING + "A part was mentioned twice.";
                 }
                 try {
-                    parts.addComponent(component, amount);
+                    parts.addComponent(component, amount, true);
                 } catch (MaterialListException e) {
                     return e.getMessage();
                 }

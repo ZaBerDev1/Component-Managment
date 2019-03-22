@@ -10,6 +10,8 @@ public class Component {
     /** the name of the component */
     private String name = "";
     private boolean isAssembly = false;
+    /** true if this component is not part of another assembly */
+    private boolean isRoot = false;
     private MaterialList materialList = new MaterialList();
 
     /**
@@ -40,6 +42,32 @@ public class Component {
     }
 
     /**
+     * setter for the attribute isAssembly
+     * @param isAssembly sets the attribute isAssembly to the new value
+     */
+    public void setIsAssembly(boolean isAssembly) {
+        this.isAssembly = isAssembly;
+    }
+
+    /**
+     * getter for the attribute isRoot
+     * 
+     * @return the attribute isRoot
+     */
+    public boolean getIsRoot() {
+        return isRoot;
+    }
+
+    /**
+     * setter for the attribute isRoot
+     * 
+     * @param isRoot the new value of isRoot
+     */
+    public void setIsRoot(boolean isRoot) {
+        this.isRoot = isRoot;
+    }
+
+    /**
      * returns the amount of an given component of the assembly
      * 
      * @param component the component which should be part of the assembly
@@ -48,7 +76,7 @@ public class Component {
      * @throws MaterialListException if the materialList doesn't contain the
      *                               component
      */
-    public int getAmount(Component component) throws ComponentException, MaterialListException {
+    public long getAmount(Component component) throws ComponentException, MaterialListException {
         if (!checkIsComponent(component)) {
             throw new ComponentException("This component is not a piece of " + name + ".");
         }
@@ -87,25 +115,32 @@ public class Component {
      * @throws MaterialListException if the amount of the component gets higher than
      *                               the max amount
      */
-    public void addPart(Component component, int amount) throws MaterialListException {
+    public void addPart(Component component, long amount) throws MaterialListException {
         isAssembly = true;
-        materialList.addComponent(component, amount);
+        materialList.addComponent(component, amount, true);
     }
 
     /**
      * removes an amount of component of the assembly
+     * 
      * @param component the component which should be removed
-     * @param amount the amount of pieces which should be removed
-     * @throws MaterialListException if the amount of the components is higher than the actual amount
+     * @param amount    the amount of pieces which should be removed
+     * @throws MaterialListException if the amount of the components is higher than
+     *                               the actual amount
      */
-    public void removePart(Component component, int amount) throws MaterialListException {
+    public void removePart(Component component, long amount) throws MaterialListException {
         materialList.remove(component, amount);
+        if (materialList.size() == 0) {
+            isAssembly = false;
+        }
     }
 
     /**
      * checks for a posible cylce in the new assembly
+     * 
      * @return true if a cycle was found
-     * @throws MaterialDataBaseException if the part is only a component and not an assembly
+     * @throws MaterialDataBaseException if the part is only a component and not an
+     *                                   assembly
      */
     public boolean checkForCycle() throws MaterialDataBaseException {
         if (!isAssembly) {
@@ -128,11 +163,14 @@ public class Component {
             }
         }
         // checks currs parts for a cycle
-        Component[] parts = curr.getAllComponents();
-        for (int i = 0; i < parts.length; i++) {
-            previousComponents.add(parts[i]);
-            if (recursiveCycleCheck(previousComponents, false)) {
-                return true;
+        Component[] parts = new Component[0];
+        if (curr.getIsAssembly()) {
+            parts = curr.getAllComponents();
+            for (int i = 0; i < parts.length; i++) {
+                previousComponents.add(parts[i]);
+                if (recursiveCycleCheck(previousComponents, false))
+                    return true;
+                previousComponents.remove(parts[i]);
             }
         }
         return false;

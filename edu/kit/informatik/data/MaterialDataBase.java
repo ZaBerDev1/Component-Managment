@@ -12,6 +12,7 @@ import edu.kit.informatik.exceptions.MaterialListException;
 public class MaterialDataBase {
     /** a list of all components and assamblies */
     private ArrayList<Component> allComponents = new ArrayList<Component>();
+    /** a new comparator that compares the components by there name */
     private Comparator<Component> componentComparator;
 
     /**
@@ -37,6 +38,7 @@ public class MaterialDataBase {
      */
     public void addAssembly(String name, MaterialList parts) throws MaterialListException, MaterialDataBaseException {
         Component assembly = new Component(name);
+        assembly.setIsRoot(true);
         if (findAll(assembly) != -1 && allComponents.get(findAll(assembly)).getIsAssembly()) {
             throw new MaterialDataBaseException("The an assembly named " + assembly.getName() + " exists already.");
         }
@@ -46,9 +48,15 @@ public class MaterialDataBase {
         }
         Component[] partArray = parts.componentSet();
         for (int i = 0; i < parts.size(); i++) {
+            if (partArray[i].equals(assembly)) {
+                throw new MaterialDataBaseException("This would create a cycle.");
+            }
             assembly.addPart(partArray[i], parts.getAmount(partArray[i]));
         }
-        if (assembly.checkForCycle()) {
+        if (checkAllForCycle()) {
+            for (int i = 0; i < parts.size(); i++) {
+                assembly.removePart(partArray[i], parts.getAmount(partArray[i]));
+            }
             throw new MaterialDataBaseException("This assembly would create a cycle.");
         }
         for (int i = 0; i < partArray.length; i++) {
@@ -57,6 +65,15 @@ public class MaterialDataBase {
         if (!allComponents.contains(assembly))
             allComponents.add(assembly);
         allComponents.sort(componentComparator);
+    }
+
+    private boolean checkAllForCycle() throws MaterialDataBaseException {
+        for (Component curr : allComponents) {
+            if (curr.getIsRoot() && curr.checkForCycle()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -86,10 +103,13 @@ public class MaterialDataBase {
         // works because the equal method only compares the name not the parts
         Component refAssembly = new Component(name);
         if (!allComponents.contains(refAssembly)) {
-            return Constant.COMPONENT;
+            throw new MaterialDataBaseException("The assembly isn't existing at the moment.");
         }
         int indexOfRefAssembly = allComponents.indexOf(refAssembly);
         Component realAssembly = allComponents.get(indexOfRefAssembly);
+        if (!realAssembly.getIsAssembly()) {
+            return Constant.COMPONENT;
+        }
         Component[] partArray = realAssembly.getAllComponents();
         String output = "";
         for (int i = 0; i < partArray.length; i++) {
@@ -170,6 +190,9 @@ public class MaterialDataBase {
             throws MaterialDataBaseException, MaterialListException {
         // works because the equal method only compares the name not the parts
         Component refAssembly = new Component(nameAssembly);
+        if (nameAssembly.equals(name)) {
+            throw new MaterialDataBaseException("This would create a cycle.");
+        }
         if (!allComponents.contains(refAssembly)) {
             throw new MaterialDataBaseException("A component with the name " + nameAssembly + " doesn't exist.");
         }
@@ -177,6 +200,10 @@ public class MaterialDataBase {
         Component realAssembly = allComponents.get(indexOfRefAssembly);
         Component part = new Component(name);
         realAssembly.addPart(part, amount);
+        if (realAssembly.checkForCycle()) {
+            realAssembly.removePart(part, amount);
+            throw new MaterialDataBaseException("This would create a cycle.");
+        }
     }
 
     /**
@@ -194,6 +221,9 @@ public class MaterialDataBase {
         Component refAssembly = new Component(nameAssembly);
         if (!allComponents.contains(refAssembly)) {
             throw new MaterialDataBaseException("A component with the name " + nameAssembly + " doesn't exist.");
+        }
+        if (nameAssembly.equals(name)) {
+            throw new MaterialDataBaseException("This would create a cycle.");
         }
         int indexOfRefAssembly = allComponents.indexOf(refAssembly);
         Component realAssembly = allComponents.get(indexOfRefAssembly);

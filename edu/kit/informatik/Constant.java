@@ -10,17 +10,10 @@ public final class Constant {
     public static final String EXCEPTIONBEGINNING = "404 ";
     /** used to output the word COMPONENT */
     public static final String COMPONENT = "COMPONENT";
+    /** used to output the word EMPTY */
+    public static final String EMPTY = "EMPTY";
     /** a int that shows that an error occured */
     public static final int ERRORINT = -1;
-
-    /**
-     * returns all commands as a String with muliple lines
-     * 
-     * @return the commands in one String
-     */
-    public String getAllCommands() {
-        return "Not finished yet.";
-    }
 
     /**
      * returns the regex for any Exception
@@ -40,7 +33,7 @@ public final class Constant {
         /** regex for the name of the assemblies and components */
         public static final String NAME = "[A-Za-z]+";
         /** regex for the amount of components in a assembley */
-        public static final String AMOUNT = "(\\d{4}|\\d{3}|\\d{2}|\\d)";
+        public static final String AMOUNT = "(1000|[1-9]\\d{2}|[1-9]\\d|[1-9])";
         /** the regex for the addAssembly command */
         public static final String ADDASSEMBLY = "^addAssembly " + NAME + "=" + AMOUNT + ":" + NAME + "(;" + AMOUNT
                 + ":" + NAME + ")*" + ENDSYMBOL;

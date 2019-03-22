@@ -7,7 +7,7 @@ import edu.kit.informatik.exceptions.MaterialListException;
 
 public class MaterialList {
     /** list of all materials and there amount in a sorted way */
-    TreeMap<Component, Integer> treeMap;
+    TreeMap<Component, Long> treeMap;
     private final int maxAmount = 1000;
 
     /**
@@ -21,7 +21,7 @@ public class MaterialList {
                 return c1.getName().compareTo(c2.getName());
             }
         };
-        treeMap = new TreeMap<Component, Integer>(comparator);
+        treeMap = new TreeMap<Component, Long>(comparator);
     }
 
     /**
@@ -42,7 +42,7 @@ public class MaterialList {
      * @throws MaterialListException if the materialList doesn't contain the
      *                               component
      */
-    public int getAmount(Component component) throws MaterialListException {
+    public long getAmount(Component component) throws MaterialListException {
         if (!contains(component)) {
             throw new MaterialListException("The material list does't contain the " + component.getName());
         }
@@ -54,16 +54,17 @@ public class MaterialList {
      * 
      * @param component the new component
      * @param amount    the amount of the new component
+     * @param withLimit activates the limit for the amount
      * @throws MaterialListException if the amount gets over the limit
      */
-    public void addComponent(Component component, int amount) throws MaterialListException {
-        int newAmount = amount;
+    public void addComponent(Component component, long amount, boolean withLimit) throws MaterialListException {
+        long newAmount = amount;
         if (contains(component)) {
             // already existing
             newAmount += treeMap.get(component);
-            if (newAmount > maxAmount) {
-                throw new MaterialListException(
-                        "It is not posible to have more than " + maxAmount + " pieces of one kind in a material list.");
+            if (newAmount > maxAmount && withLimit) {
+                throw new MaterialListException("It is not posible to have more than " + (maxAmount + 1)
+                        + " pieces of one kind in a material list.");
             }
         }
         treeMap.put(component, newAmount);
@@ -76,8 +77,12 @@ public class MaterialList {
      * @param amount    the speciefied amount
      * @throws MaterialListException if there is no component like this
      */
-    public void remove(Component component, int amount) throws MaterialListException {
-        int oldAmount = treeMap.get(component);
+    public void remove(Component component, long amount) throws MaterialListException {
+        if (!treeMap.containsKey(component)) {
+            throw new MaterialListException(
+                    "The component " + component.getName() + " doesn't exist in the materialList.");
+        }
+        long oldAmount = treeMap.get(component);
         if (oldAmount < amount) {
             // too many removed
             throw new MaterialListException("The amount of components should be lower than or equal than " + oldAmount);
@@ -121,12 +126,13 @@ public class MaterialList {
      * there added amounts
      * 
      * @param secondMaterialList the second material list
+     * @param withLimit activates the limit for the amount
      * @throws MaterialListException i don't know how you did it but congrats to you
      */
-    public void merge(MaterialList secondMaterialList) throws MaterialListException {
+    public void merge(MaterialList secondMaterialList, boolean withLimit) throws MaterialListException {
         Component[] allComponents = secondMaterialList.componentSet();
         for (int i = 0; i < allComponents.length; i++) {
-            addComponent(allComponents[i], secondMaterialList.getAmount(allComponents[i]));
+            addComponent(allComponents[i], secondMaterialList.getAmount(allComponents[i]), withLimit);
         }
     }
 
@@ -144,8 +150,8 @@ public class MaterialList {
             for (int i = 1; i < sortedArray.length; i++) {
                 Component c1 = sortedArray[i - 1];
                 Component c2 = sortedArray[i];
-                int amount1 = 0;
-                int amount2 = 0;
+                long amount1 = 0;
+                long amount2 = 0;
                 try {
                     amount1 = this.getAmount(c1);
                     amount2 = this.getAmount(c2);
@@ -179,13 +185,14 @@ public class MaterialList {
 
     /**
      * mulitplies all amounts with a skalar
+     * 
      * @param skalar the multiplyer
      * @throws MaterialListException getAmount error
      */
-    public void multiplyList(int skalar) throws MaterialListException {
+    public void multiplyList(long skalar) throws MaterialListException {
         Component[] array = componentSet();
         for (int i = 0; i < array.length; i++) {
-            int currAmount = getAmount(array[i]);
+            long currAmount = getAmount(array[i]);
             treeMap.replace(array[i], currAmount, currAmount * skalar);
         }
     }

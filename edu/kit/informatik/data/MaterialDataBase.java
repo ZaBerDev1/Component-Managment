@@ -199,8 +199,11 @@ public class MaterialDataBase {
         int indexOfRefAssembly = allComponents.indexOf(refAssembly);
         Component realAssembly = allComponents.get(indexOfRefAssembly);
         Component part = new Component(name);
+        if (allComponents.contains(part)) {
+            part = allComponents.get(findAll(part));
+        }
         realAssembly.addPart(part, amount);
-        if (realAssembly.checkForCycle()) {
+        if (checkAllForCycle()) {
             realAssembly.removePart(part, amount);
             throw new MaterialDataBaseException("This would create a cycle.");
         }

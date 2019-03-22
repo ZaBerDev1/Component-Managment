@@ -40,7 +40,7 @@ public final class Constant {
         /** regex for the name of the assemblies and components */
         public static final String NAME = "[A-Za-z]+";
         /** regex for the amount of components in a assembley */
-        public static final String AMOUNT = "(\\d{3}|\\d{2}|\\d)";
+        public static final String AMOUNT = "(\\d{4}|\\d{3}|\\d{2}|\\d)";
         /** the regex for the addAssembly command */
         public static final String ADDASSEMBLY = "^addAssembly " + NAME + "=" + AMOUNT + ":" + NAME + "(;" + AMOUNT
                 + ":" + NAME + ")*" + ENDSYMBOL;

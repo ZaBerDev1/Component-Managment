@@ -8,7 +8,7 @@ import edu.kit.informatik.exceptions.MaterialListException;
 public class MaterialList {
     /** list of all materials and there amount in a sorted way */
     TreeMap<Component, Integer> treeMap;
-    private final int maxAmount = 999;
+    private final int maxAmount = 1000;
 
     /**
      * constructor that also creates an Comparator for the attribute treeMap
@@ -189,7 +189,7 @@ public class MaterialList {
             treeMap.replace(array[i], currAmount, currAmount * skalar);
         }
     }
-    
+
     @Override
     public String toString() {
         String output = "";

@@ -145,4 +145,9 @@ public class Component {
         }
         return this.getName().equals(((Component) component).getName());
     }
+
+    @Override
+    public int hashCode() {
+        return name.compareTo("");
+    }
 }

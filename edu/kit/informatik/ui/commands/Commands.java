@@ -18,7 +18,8 @@ public enum Commands {
         @Override
         public String execute(String parameters, MaterialDataBase materialDataBase) {
             if (!parameters.contains("=") || !parameters.contains(":")) {
-                return "The command should like addAssembly nameAssembly=amount1:name1;amount2:name2;...";
+                return Constant.EXCEPTIONBEGINNING
+                        + "The command should like addAssembly nameAssembly=amount1:name1;amount2:name2;...";
             }
             String equalSympbolSplited[] = parameters.split("="); // 1 is the assembly name
             String componentPairs[] = equalSympbolSplited[1].split(";");
@@ -29,11 +30,11 @@ public enum Commands {
                 try {
                     amount = Integer.parseInt(splitedComponentPair[0]);
                 } catch (NumberFormatException e) {
-                    return "The amount of each part should be a number between 0 and 999";
+                    return Constant.EXCEPTIONBEGINNING + "The amount of each part should be a number between 0 and 999";
                 }
                 Component component = new Component(splitedComponentPair[1]);
                 if (parts.contains(component)) {
-                    return "A part was mentioned twice.";
+                    return Constant.EXCEPTIONBEGINNING + "A part was mentioned twice.";
                 }
                 try {
                     parts.addComponent(component, amount);

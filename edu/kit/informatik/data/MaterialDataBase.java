@@ -51,6 +51,10 @@ public class MaterialDataBase {
             if (partArray[i].equals(assembly)) {
                 throw new MaterialDataBaseException("This would create a cycle.");
             }
+            //checks if the part already exists
+            if (findAll(partArray[i]) != -1) {
+                partArray[i] = allComponents.get(findAll(partArray[i]));
+            }
             assembly.addPart(partArray[i], parts.getAmount(partArray[i]));
         }
         if (checkAllForCycle()) {

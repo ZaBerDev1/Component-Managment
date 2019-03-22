@@ -112,7 +112,7 @@ public class MaterialDataBase {
      * 
      * @param name the name of the main assembly
      * @return the String in form of a list
-     * @throws MaterialDataBaseException if the component already exists
+     * @throws MaterialDataBaseException if the assembly already exists
      */
     public String getAssembly(String name) throws MaterialDataBaseException {
         // works because the equal method only compares the name not the parts
@@ -125,6 +125,31 @@ public class MaterialDataBase {
         try {
             ProductList productList = new ProductList(realAssembly);
             return productList.toString(true, false);
+        } catch (ComponentException e) {
+            return e.getMessage();
+        } catch (MaterialListException e) {
+            return e.getMessage();
+        }
+    }
+
+    /**
+     * returns all components of an assembly in a String
+     * 
+     * @param name the name of the main assembly
+     * @return the String in form of a list
+     * @throws MaterialDataBaseException if the component already exists
+     */
+    public String getComponents(String name) throws MaterialDataBaseException {
+        // works because the equal method only compares the name not the parts
+        Component refAssembly = new Component(name);
+        if (!allComponents.contains(refAssembly)) {
+            throw new MaterialDataBaseException("A component with the name " + name + " doesn't exist.");
+        }
+        int indexOfRefAssembly = allComponents.indexOf(refAssembly);
+        Component realAssembly = allComponents.get(indexOfRefAssembly);
+        try {
+            ProductList productList = new ProductList(realAssembly);
+            return productList.toString(false, true);
         } catch (ComponentException e) {
             return e.getMessage();
         } catch (MaterialListException e) {

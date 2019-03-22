@@ -39,19 +39,17 @@ public class ProductList {
         Component[] componentArray = allParts.componentSet();
         String output = "";
         for (int i = 0; i < componentArray.length; i++) {
+            final String seperateSymbol = ";";
             //handels all assemblies
             if (componentArray[i].getIsAssembly() && printAssemblies) {
-                output += componentArray[i].getName() + ":" + allParts.getAmount(componentArray[i]);
+                output += componentArray[i].getName() + ":" + allParts.getAmount(componentArray[i]) + seperateSymbol;
             }
             //handels all components
             if (!componentArray[i].getIsAssembly() && printComponents) {
-                output += componentArray[i].getName() + ":" + allParts.getAmount(componentArray[i]);
+                output += componentArray[i].getName() + ":" + allParts.getAmount(componentArray[i]) + seperateSymbol;
             }
-            final String regexPair = "(" + Constant.CommandRegex.NAME + ":" + Constant.CommandRegex.AMOUNT + ")";
-            final String regexMuliple = regexPair + ";" + regexPair + "+" + Constant.CommandRegex.ENDSYMBOL;
-            final String regexSingle = regexPair + Constant.CommandRegex.ENDSYMBOL;
-            if (i != componentArray.length - 1 && output.matches(regexMuliple + "|" + regexSingle)) {
-                output += ";";
+            if (i == componentArray.length - 1) {
+                output = output.substring(0, output.length() - seperateSymbol.length());
             }
         }
         return output;

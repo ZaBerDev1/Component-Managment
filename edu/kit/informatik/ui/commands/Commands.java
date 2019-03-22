@@ -101,7 +101,11 @@ public enum Commands {
     GETCOMPONENTS(Constant.CommandRegex.GETCOMPONENTS) {
         @Override
         public String execute(String parameters, MaterialDataBase materialDataBase) {
-            return "getComponents unfinished";
+            try {
+                return materialDataBase.getComponents(parameters);
+            } catch (MaterialDataBaseException e) {
+                return e.getMessage();
+            }
         }
     },
 

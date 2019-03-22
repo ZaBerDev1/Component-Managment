@@ -117,7 +117,7 @@ public class MaterialDataBase {
         Component realAssembly = allComponents.get(indexOfRefAssembly);
         MaterialList connectedAssemblys = new MaterialList();
         try {
-            connectedAssemblys = startGetAssembly(realAssembly);
+            connectedAssemblys = startGetAssembly(realAssembly, 1);
         } catch (MaterialListException e) {
             return e.getMessage();
         } catch (ComponentException e) {
@@ -126,13 +126,16 @@ public class MaterialDataBase {
         return connectedAssemblys.toStringSorted();
     }
 
-    private MaterialList startGetAssembly(Component startComponent) throws MaterialListException, ComponentException {
+    private MaterialList startGetAssembly(Component startComponent, int amount)
+            throws MaterialListException, ComponentException, MaterialListException {
         Component[] parts = startComponent.getAllComponents();
         MaterialList connectedAssemblys = new MaterialList();
         for (int i = 0; i < parts.length; i++) {
             connectedAssemblys.addComponent(parts[i], startComponent.getAmount(parts[i]));
         }
-        return recrusiveGetAssembly(connectedAssemblys);
+        MaterialList nMaterialList = recrusiveGetAssembly(connectedAssemblys);
+        nMaterialList.multiplyList(amount);
+        return nMaterialList;
     }
 
     private MaterialList recrusiveGetAssembly(MaterialList connectedAssemblys)
@@ -142,7 +145,8 @@ public class MaterialDataBase {
         nConnectedAssemlbys.merge(connectedAssemblys);
         for (int i = 0; i < allComponents.length; i++) {
             if (allComponents[i].getIsAssembly()) {
-                nConnectedAssemlbys.merge(startGetAssembly(allComponents[i]));
+                nConnectedAssemlbys
+                        .merge(startGetAssembly(allComponents[i], connectedAssemblys.getAmount(allComponents[i])));
             }
         }
         return nConnectedAssemlbys;

@@ -178,6 +178,19 @@ public class MaterialList {
     }
 
     /**
+     * mulitplies all amounts with a skalar
+     * @param skalar the multiplyer
+     * @throws MaterialListException getAmount error
+     */
+    public void multiplyList(int skalar) throws MaterialListException {
+        Component[] array = componentSet();
+        for (int i = 0; i < array.length; i++) {
+            int currAmount = getAmount(array[i]);
+            treeMap.replace(array[i], currAmount, currAmount * skalar);
+        }
+    }
+
+    /**
      * test code returns the whole treeMap as a String in form of a list
      */
     @Override

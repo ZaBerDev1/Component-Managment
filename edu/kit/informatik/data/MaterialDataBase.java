@@ -146,6 +146,9 @@ public class MaterialDataBase {
         }
         int indexOfRefAssembly = allComponents.indexOf(refAssembly);
         Component realAssembly = allComponents.get(indexOfRefAssembly);
+        if (!realAssembly.getIsAssembly()) {
+            throw new MaterialDataBaseException("The command getAssembly can't be used on a component.");
+        }
         try {
             ProductList productList = new ProductList(realAssembly);
             return productList.toString(true, false);
@@ -171,6 +174,9 @@ public class MaterialDataBase {
         }
         int indexOfRefAssembly = allComponents.indexOf(refAssembly);
         Component realAssembly = allComponents.get(indexOfRefAssembly);
+        if (!realAssembly.getIsAssembly()) {
+            throw new MaterialDataBaseException("The command getComponent can't be used on a component.");
+        }
         try {
             ProductList productList = new ProductList(realAssembly);
             return productList.toString(false, true);

@@ -159,7 +159,7 @@ public enum Commands {
             }
             try {
                 materialDataBase.removePart(nameAssembly, name, amount);
-            } catch (MaterialDataBaseException e) {
+            } catch (ComponentException e) {
                 return e.getMessage();
             } catch (MaterialListException e) {
                 return e.getMessage();

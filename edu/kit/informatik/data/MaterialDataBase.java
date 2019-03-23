@@ -51,7 +51,7 @@ public class MaterialDataBase {
             if (partArray[i].equals(assembly)) {
                 throw new MaterialDataBaseException("This would create a cycle.");
             }
-            //checks if the part already exists
+            // checks if the part already exists
             if (findAll(partArray[i]) != -1) {
                 partArray[i] = allComponents.get(findAll(partArray[i]));
             }
@@ -84,9 +84,8 @@ public class MaterialDataBase {
      * removess a component from allComponents
      * 
      * @param name the name of the component
-     * @throws MaterialListException if the component doesn't exist in the
-     *                                   database.
-     * @throws ComponentException if an error with the product list occures
+     * @throws MaterialListException if the component doesn't exist in the database.
+     * @throws ComponentException    if an error with the product list occures
      */
     public void removeAssembly(String name) throws MaterialListException, ComponentException {
         // works because the equal method only compares the name not the parts
@@ -98,31 +97,15 @@ public class MaterialDataBase {
         if (!realComponent.getIsAssembly()) {
             throw new MaterialListException("Only assemblies can be removed with removeAssembly.");
         }
-        //allComponents.remove(component);
+        // removes
+        ProductList productList = new ProductList(realComponent);
+        Component[] parts = productList.getAllComponents();
+        for (int i = 0; i < parts.length; i++) {
+            if (!parts[i].getIsAssembly()) {
+                allComponents.remove(parts[i]);
+            }
+        }
         realComponent.setIsAssembly(false);
-        deleteAllUnconnected();
-    }
-
-    private void deleteAllUnconnected() throws ComponentException, MaterialListException {
-        ArrayList<Component> wholeConnected = new ArrayList<Component>();
-        for (int i = 0; i < allComponents.size(); i++) {
-            Component curr = allComponents.get(i);
-            if (!curr.getIsAssembly()) {
-                continue;
-            }
-            wholeConnected.add(curr);
-            ProductList productList = new ProductList(curr);
-            for (Component productListComponent : productList.getAllComponents()) {
-                wholeConnected.add(productListComponent);
-            }
-        }
-        //check if any of the components/assemblies is not in the wholeConnected list
-        for (int i = 0; i < allComponents.size(); i++) {
-            Component existingComponent = allComponents.get(i);
-            if (!existingComponent.getIsAssembly() && !wholeConnected.contains(existingComponent)) {
-                allComponents.remove(existingComponent);
-            }
-        }
     }
 
     /**
@@ -240,6 +223,8 @@ public class MaterialDataBase {
         Component part = new Component(name);
         if (allComponents.contains(part)) {
             part = allComponents.get(findAll(part));
+        } else {
+            allComponents.add(part);
         }
         realAssembly.addPart(part, amount);
         if (checkAllForCycle()) {
@@ -254,23 +239,32 @@ public class MaterialDataBase {
      * @param nameAssembly the name of the assembly
      * @param name         the name of the part
      * @param amount       the amount which should be removed
-     * @throws MaterialDataBaseException when there is no assembly with that name
-     * @throws MaterialListException     if the amount get lower than 0
+     * @throws ComponentException    for deleteAllUnconnected
+     * @throws MaterialListException if the amount get lower than 0
      */
     public void removePart(String nameAssembly, String name, int amount)
-            throws MaterialDataBaseException, MaterialListException {
+            throws ComponentException, MaterialListException {
         // works because the equal method only compares the name not the parts
         Component refAssembly = new Component(nameAssembly);
         if (!allComponents.contains(refAssembly)) {
-            throw new MaterialDataBaseException("A component with the name " + nameAssembly + " doesn't exist.");
+            throw new MaterialListException("A component with the name " + nameAssembly + " doesn't exist.");
         }
         if (nameAssembly.equals(name)) {
-            throw new MaterialDataBaseException("This would create a cycle.");
+            throw new MaterialListException("This would create a cycle.");
         }
         int indexOfRefAssembly = allComponents.indexOf(refAssembly);
         Component realAssembly = allComponents.get(indexOfRefAssembly);
         Component part = new Component(name);
         realAssembly.removePart(part, amount);
+        // removes
+        ProductList productList = new ProductList(realAssembly);
+        Component[] parts = productList.getAllComponents();
+        for (int i = 0; i < parts.length; i++) {
+            if (!parts[i].getIsAssembly()) {
+                allComponents.remove(parts[i]);
+            }
+        }
+        realAssembly.setIsAssembly(false);
     }
 
     /**
@@ -278,7 +272,7 @@ public class MaterialDataBase {
      */
     public void printExistingParts() {
         for (int i = 0; i < allComponents.size(); i++) {
-            Terminal.printLine(allComponents.get(i).getName());
+            Terminal.printLine(allComponents.get(i).getName() + " | " + allComponents.get(i).getIsAssembly());
         }
     }
 

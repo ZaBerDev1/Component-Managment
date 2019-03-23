@@ -37,6 +37,9 @@ class Main {
             } catch (InputException e) {
                 Terminal.printError(e.getMessage());
             }
+            //test code
+            // materialDataBase.printExistingParts();
+            //
         } while(programIsRunning);
     }
 

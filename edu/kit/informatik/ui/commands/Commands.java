@@ -2,6 +2,7 @@ package edu.kit.informatik.ui.commands;
 
 import edu.kit.informatik.Constant;
 import edu.kit.informatik.data.*;
+import edu.kit.informatik.exceptions.ComponentException;
 import edu.kit.informatik.exceptions.InputException;
 import edu.kit.informatik.exceptions.MaterialDataBaseException;
 import edu.kit.informatik.exceptions.MaterialListException;
@@ -62,7 +63,9 @@ public enum Commands {
         public String execute(String parameters, MaterialDataBase materialDataBase) {
             try {
                 materialDataBase.removeAssembly(parameters);
-            } catch (MaterialDataBaseException e) {
+            } catch (MaterialListException e) {
+                return e.getMessage();
+            } catch (ComponentException e) {
                 return e.getMessage();
             }
             return Constant.OK;

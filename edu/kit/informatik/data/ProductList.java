@@ -33,6 +33,14 @@ public class ProductList {
     }
 
     /**
+     * getter for all components in form of an array
+     * @return the array which contains all components
+     */
+    public Component[] getAllComponents() {
+        return allParts.componentSet();
+    }
+
+    /**
      * a modiefied form of the toString method if both parameters are false the
      * function will return an empty string
      * 

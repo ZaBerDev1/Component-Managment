@@ -84,16 +84,45 @@ public class MaterialDataBase {
      * removess a component from allComponents
      * 
      * @param name the name of the component
-     * @throws MaterialDataBaseException if the component doesn't exist in the
+     * @throws MaterialListException if the component doesn't exist in the
      *                                   database.
+     * @throws ComponentException if an error with the product list occures
      */
-    public void removeAssembly(String name) throws MaterialDataBaseException {
+    public void removeAssembly(String name) throws MaterialListException, ComponentException {
         // works because the equal method only compares the name not the parts
         Component component = new Component(name);
         if (!allComponents.contains(component)) {
-            throw new MaterialDataBaseException("A component with the name " + name + " doesn't exist.");
+            throw new MaterialListException("A component with the name " + name + " doesn't exist.");
         }
-        allComponents.remove(component);
+        Component realComponent = allComponents.get(findAll(component));
+        if (!realComponent.getIsAssembly()) {
+            throw new MaterialListException("Only assemblies can be removed with removeAssembly.");
+        }
+        //allComponents.remove(component);
+        realComponent.setIsAssembly(false);
+        deleteAllUnconnected();
+    }
+
+    private void deleteAllUnconnected() throws ComponentException, MaterialListException {
+        ArrayList<Component> wholeConnected = new ArrayList<Component>();
+        for (int i = 0; i < allComponents.size(); i++) {
+            Component curr = allComponents.get(i);
+            if (!curr.getIsAssembly()) {
+                continue;
+            }
+            wholeConnected.add(curr);
+            ProductList productList = new ProductList(curr);
+            for (Component productListComponent : productList.getAllComponents()) {
+                wholeConnected.add(productListComponent);
+            }
+        }
+        //check if any of the components/assemblies is not in the wholeConnected list
+        for (int i = 0; i < allComponents.size(); i++) {
+            Component existingComponent = allComponents.get(i);
+            if (!existingComponent.getIsAssembly() && !wholeConnected.contains(existingComponent)) {
+                allComponents.remove(existingComponent);
+            }
+        }
     }
 
     /**

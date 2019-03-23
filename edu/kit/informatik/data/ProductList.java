@@ -1,5 +1,6 @@
 package edu.kit.informatik.data;
 
+import edu.kit.informatik.Constant;
 import edu.kit.informatik.exceptions.ComponentException;
 import edu.kit.informatik.exceptions.MaterialListException;
 
@@ -61,6 +62,9 @@ public class ProductList {
             if (i == componentArray.length - 1 && output.length() != 0) {
                 output = output.substring(0, output.length() - seperateSymbol.length());
             }
+        }
+        if (output.length() == 0) {
+            return Constant.EMPTY;
         }
         return output;
     }
